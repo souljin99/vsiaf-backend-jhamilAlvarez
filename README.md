@@ -13,3 +13,10 @@ Endpoints (todos GET, filtros opcionales: codOfic, codGrupo, codResp, estado, de
 - /api/reportes/resumen
 - /api/reportes/general/csv
 Swagger: /swagger-ui/index.html
+
+CRUD de activos (alimentan los reportes):
+- GET    /api/activos/{codActivo}
+- POST   /api/activos                    {"descripcion","fechaIncorporacion","costo","estado","codGrupo","codOfic","codResp"}
+- PUT    /api/activos/{codActivo}
+- PATCH  /api/activos/{codActivo}/estado {"estado":"MALO"}
+- DELETE /api/activos/{codActivo}

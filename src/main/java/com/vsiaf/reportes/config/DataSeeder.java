@@ -8,7 +8,10 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-/** Carga datos de ejemplo la primera vez (solo si las tablas estan vacias). */
+/**
+ * Al iniciar: crea los catalogos que falten (grupos, oficinas, responsables) y, si no hay ningun activo,
+ * carga activos de ejemplo. Es seguro ejecutarlo varias veces.
+ */
 @Component
 public class DataSeeder implements CommandLineRunner {
 
@@ -27,21 +30,21 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (activos.count() > 0 || grupos.count() > 0) return;
+        Grupo edif = grupo(1, "EDIFICACIONES", 40);
+        Grupo mue = grupo(2, "MUEBLES Y ENSERES DE OFICINA", 10);
+        Grupo maq = grupo(3, "MAQUINARIA EN GENERAL", 8);
+        Grupo com = grupo(5, "EQUIPO DE COMUNICACIONES", 8);
+        Grupo cmp = grupo(15, "EQUIPOS DE COMPUTACION", 4);
 
-        Grupo edif = grupos.save(new Grupo(1, "EDIFICACIONES", 40));
-        Grupo mue = grupos.save(new Grupo(2, "MUEBLES Y ENSERES DE OFICINA", 10));
-        Grupo maq = grupos.save(new Grupo(3, "MAQUINARIA EN GENERAL", 8));
-        Grupo com = grupos.save(new Grupo(5, "EQUIPO DE COMUNICACIONES", 8));
-        Grupo cmp = grupos.save(new Grupo(15, "EQUIPOS DE COMPUTACION", 4));
+        Oficina dir = oficina(1, "DIRECCION DE CARRERA");
+        Oficina lab = oficina(2, "LABORATORIO DE COMPUTACION");
+        Oficina sec = oficina(3, "SECRETARIA");
 
-        Oficina dir = oficinas.save(new Oficina(1, "DIRECCION DE CARRERA"));
-        Oficina lab = oficinas.save(new Oficina(2, "LABORATORIO DE COMPUTACION"));
-        Oficina sec = oficinas.save(new Oficina(3, "SECRETARIA"));
+        Responsable r1 = responsable(1, "JUAN PEREZ", "Director de Carrera");
+        Responsable r2 = responsable(2, "MARIA ROJAS", "Secretaria");
+        Responsable r3 = responsable(3, "CARLOS MAMANI", "Encargado de Laboratorio");
 
-        Responsable r1 = responsables.save(new Responsable(1, "JUAN PEREZ", "Director de Carrera"));
-        Responsable r2 = responsables.save(new Responsable(2, "MARIA ROJAS", "Secretaria"));
-        Responsable r3 = responsables.save(new Responsable(3, "CARLOS MAMANI", "Encargado de Laboratorio"));
+        if (activos.count() > 0) return;
 
         activos.save(new Activo("SIS-0001", "ESCRITORIO DE MADERA 1.40 M", LocalDate.of(2018, 3, 12), bd("1850.00"), "BUENO", mue, dir, r1));
         activos.save(new Activo("SIS-0002", "SILLON EJECUTIVO GIRATORIO", LocalDate.of(2019, 5, 20), bd("920.00"), "BUENO", mue, dir, r1));
@@ -56,6 +59,18 @@ public class DataSeeder implements CommandLineRunner {
         activos.save(new Activo("SIS-0011", "AIRE ACONDICIONADO 18000 BTU", LocalDate.of(2019, 12, 3), bd("5200.00"), "BUENO", maq, lab, r3));
         activos.save(new Activo("SIS-0012", "GENERADOR ELECTRICO 3 KVA", LocalDate.of(2015, 6, 18), bd("8900.00"), "REGULAR", maq, dir, r1));
         activos.save(new Activo("SIS-0013", "AMBIENTE DE LABORATORIO (EDIFICACION)", LocalDate.of(2010, 1, 10), bd("150000.00"), "BUENO", edif, lab, r3));
+    }
+
+    private Grupo grupo(int cod, String nombre, int vida) {
+        return grupos.findByCodGrupo(cod).orElseGet(() -> grupos.save(new Grupo(cod, nombre, vida)));
+    }
+
+    private Oficina oficina(int cod, String nombre) {
+        return oficinas.findByCodOfic(cod).orElseGet(() -> oficinas.save(new Oficina(cod, nombre)));
+    }
+
+    private Responsable responsable(int cod, String nombre, String cargo) {
+        return responsables.findByCodResp(cod).orElseGet(() -> responsables.save(new Responsable(cod, nombre, cargo)));
     }
 
     private static BigDecimal bd(String v) {

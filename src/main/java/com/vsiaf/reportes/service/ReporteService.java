@@ -86,6 +86,11 @@ public class ReporteService {
                 suma(rows, ActivoRow::costo), suma(rows, ActivoRow::depreciacionAcumulada), suma(rows, ActivoRow::valorNeto));
     }
 
+    /** Convierte un activo en renglon de reporte (a la fecha de hoy). */
+    public ActivoRow aFila(Activo a) {
+        return fila(a, LocalDate.now());
+    }
+
     // ---------- utilidades ----------
 
     private LocalDate corte(Filtro f) {

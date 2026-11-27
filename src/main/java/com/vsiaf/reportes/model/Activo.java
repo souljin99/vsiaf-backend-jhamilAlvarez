@@ -37,6 +37,12 @@ public class Activo {
         this.codActivo = codActivo; this.descripcion = descripcion; this.fechaIncorporacion = fechaIncorporacion;
         this.costo = costo; this.estado = estado; this.grupo = grupo; this.oficina = oficina; this.responsable = responsable;
     }
+    public void actualizar(String descripcion, LocalDate fechaIncorporacion, BigDecimal costo, String estado,
+                           Grupo grupo, Oficina oficina, Responsable responsable) {
+        this.descripcion = descripcion; this.fechaIncorporacion = fechaIncorporacion; this.costo = costo;
+        this.estado = estado; this.grupo = grupo; this.oficina = oficina; this.responsable = responsable;
+    }
+    public void setEstado(String estado) { this.estado = estado; }
     public Long getId() { return id; }
     public String getCodActivo() { return codActivo; }
     public String getDescripcion() { return descripcion; }
